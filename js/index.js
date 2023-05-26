@@ -30,9 +30,10 @@ operatorButtons.forEach(button => {
     button.addEventListener('click', setOperator)
     button.addEventListener('click', updateVariables)
     button.addEventListener('click', populateDisplay)
-    // button.addEventListener('click', setSecondDisplay)
     button.addEventListener('click', populateSecondDisplay)
 })
+
+equalButton.addEventListener('click', calculate)
 
 clearButton.addEventListener('click', clear)
 
@@ -100,8 +101,6 @@ function updateValues() {
     currentValue = currentNumArr.join('');
     displayValue = currentValue;
     console.log(`cv = ${currentValue}, fn = ${firstNum}`)
-        
-        
 }
 
 function setFirstNum() {
@@ -109,7 +108,11 @@ function setFirstNum() {
 }
 
 function calculate() {
-    
+    secondNum = currentValue;
+    let result = String(operate(+firstNum, +secondNum, operator));
+    displayValue = result
+    populateDisplay()
+    console.log(`res = ${result}, ${firstNum}, ${secondNum}, op = ${operator}`)
 };
 
 function deleteLastChar() {
@@ -147,20 +150,23 @@ function updateVariables() {
         currentValue = '0';
         currentNumArr = [];
         console.log(`cv = ${currentValue}, ${firstNum}, ${secondNum} pt1`)
-    } else if (firstNum !== undefined && secondNum === undefined) {
-        secondNum = currentValue;
-        let result = String(operate(+firstNum, +secondNum, previousOp));
-        console.log(result)
-        secondaryDisplay = `${firstNum} ${previousOp} ${secondNum} = `
-        firstNum = displayValue = currentValue = result;
-        currentNumArr = [];
-        console.log(`cv = ${currentValue}, ${firstNum}, ${secondNum} pt2`)
     } else {
+    // else if (firstNum !== undefined && secondNum === undefined) {
+    //     secondNum = currentValue;
+    //     let result = String(operate(+firstNum, +secondNum, previousOp));
+    //     console.log(result)
+    //     secondaryDisplay = `${firstNum} ${previousOp} ${secondNum} ${operator} `
+    //     firstNum = displayValue = result;
+    //     currentValue = secondNum;
+    //     currentNumArr = [];
+    //     console.log(`cv = ${currentValue}, ${firstNum}, ${secondNum} pt2`)
+    // } else {
         secondNum = currentValue;
         let result = String(operate(+firstNum, +secondNum, previousOp));
         console.log(result)
-        secondaryDisplay = `${firstNum} ${previousOp} ${secondNum} = `
-        firstNum = displayValue = currentValue = result;
+        secondaryDisplay = `${firstNum} ${previousOp} ${secondNum} ${operator} `
+        firstNum = displayValue = result;
+        currentValue = secondNum;
         currentNumArr = [];
         console.log(`result = ${result}`)
         console.log(`cv = ${currentValue}, ${firstNum}, ${secondNum} pt3`)
