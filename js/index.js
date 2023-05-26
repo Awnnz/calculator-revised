@@ -6,6 +6,7 @@ let firstNum,
     displayValue = '0',
     secondaryDisplay,
     previousOp,
+    previousNum,
     currentNumArr = [];
 
 // Selectors
@@ -109,9 +110,14 @@ function setFirstNum() {
 
 function calculate() {
     secondNum = currentValue;
+    if (secondNum || secondNum === '0') lastNum = secondNum;
+    secondNum = lastNum;
     let result = String(operate(+firstNum, +secondNum, operator));
-    displayValue = result
-    populateDisplay()
+    displayValue = result;
+    firstNum = result;
+    currentValue = '';
+    currentNumArr = [];
+    populateDisplay();
     console.log(`res = ${result}, ${firstNum}, ${secondNum}, op = ${operator}`)
 };
 
@@ -136,7 +142,6 @@ function clear() {
 function setOperator() {
     previousOp = operator;
     operator = this.textContent;
-    console.log(operator)
 }
 
 function clearDisplayValue() {
@@ -161,12 +166,13 @@ function updateVariables() {
     //     currentNumArr = [];
     //     console.log(`cv = ${currentValue}, ${firstNum}, ${secondNum} pt2`)
     // } else {
+        if (!currentValue) return
         secondNum = currentValue;
         let result = String(operate(+firstNum, +secondNum, previousOp));
         console.log(result)
         secondaryDisplay = `${firstNum} ${previousOp} ${secondNum} ${operator} `
         firstNum = displayValue = result;
-        currentValue = secondNum;
+        currentValue = '';
         currentNumArr = [];
         console.log(`result = ${result}`)
         console.log(`cv = ${currentValue}, ${firstNum}, ${secondNum} pt3`)
