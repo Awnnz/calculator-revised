@@ -80,7 +80,7 @@ function operate(num1, num2, operator) {
     switch (operator) {
         case '+': return add(num1, num2);
         case '-': return subtract(num1, num2);
-        case 'X': return multiply(num1, num2);
+        case 'x': return multiply(num1, num2);
         case '÷': return divide(num1, num2);
     }
 };
@@ -94,6 +94,7 @@ function populateSecondDisplay() {
 }
 
 function updateValues() {
+    if (currentNumArr.length >= 25) return;
     let decimalChecker = currentNumArr.some(index => index === '.');
     if (decimalChecker && this.textContent === '.') return;
     currentNumArr.push(this.textContent);
@@ -112,8 +113,9 @@ function calculate() {
     }
     if (secondNum || secondNum === '0') lastNum = secondNum;
     secondNum = lastNum;
-    let result = String(operate(+firstNum, +secondNum, operator));
+    let result = String(Math.round((operate(+firstNum, +secondNum, operator) * 100)) / 100);
     displayValue = result;
+    console.log(typeof displayValue)
     secondaryDisplay = `${firstNum} ${operator} ${secondNum} = `
     firstNum = result;
     currentValue = '';
@@ -142,15 +144,6 @@ function clear() {
     populateSecondDisplay()
 }
 
-function setOperator() {
-    previousOp = operator;
-    operator = this.textContent;
-}
-
-function clearDisplayValue() {
-    displayValue = '0'
-}
-
 function updateVariables() {
     if (firstNum === undefined && secondNum === undefined) {
         firstNum = currentValue;
@@ -163,7 +156,7 @@ function updateVariables() {
             return;
         }
         secondNum = currentValue;
-        let result = String(operate(+firstNum, +secondNum, previousOp));
+        let result = String(Math.round(operate(+firstNum, +secondNum, previousOp) * 100) / 100); 
         secondaryDisplay = `${firstNum} ${previousOp} ${secondNum} ${operator} `
         firstNum = displayValue = result;
         currentValue = '';
@@ -171,9 +164,15 @@ function updateVariables() {
     }
 }
 
+function setOperator() {
+    previousOp = operator;
+    operator = this.textContent;
+    if (operator === 'X') operator = operator.toLowerCase();
+}
 
 function setPreviousOp() {
     if (!operator) previousOp = this.textContent;
     previousOp = operator;
+    if (operator === 'X') operator = operator.toLowerCase();
 }
 
