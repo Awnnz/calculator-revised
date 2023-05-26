@@ -23,7 +23,6 @@ let clearButton = document.querySelector('.clear-btn');
 // Main
 nummberButtons.forEach(button => {
     button.addEventListener('click', updateValues)
-    button.addEventListener('click', populateDisplay)
 })
 
 operatorButtons.forEach(button => {
@@ -37,6 +36,8 @@ operatorButtons.forEach(button => {
 equalButton.addEventListener('click', calculate)
 
 clearButton.addEventListener('click', clear)
+
+deleteButton.addEventListener('click', deleteLastChar)
 
 // Styling
 buttonsSelector.forEach(button => {
@@ -88,41 +89,45 @@ function populateDisplay() {
     numberDisplaySelector.textContent = displayValue;
 }
 
-// function setSecondDisplay() {
-//     secondaryDisplay = `${displayValue} ${operator}`
-// }
-
 function populateSecondDisplay() {
     secondDisplaySelector.textContent = secondaryDisplay;
 }
 
 function updateValues() {
-         
+    let decimalChecker = currentNumArr.some(index => index === '.');
+    if (decimalChecker && this.textContent === '.') return;
     currentNumArr.push(this.textContent);
     currentValue = currentNumArr.join('');
     displayValue = currentValue;
-    console.log(`cv = ${currentValue}, fn = ${firstNum}`)
-}
-
-function setFirstNum() {
-    
+    populateDisplay();
 }
 
 function calculate() {
+    if (firstNum === undefined || operator === undefined) return;
     secondNum = currentValue;
+    if (secondNum === '0' && operator === '÷') {
+        displayValue = `'Please don't h-h-h-hurt me`;
+        populateDisplay();
+        return;
+    }
     if (secondNum || secondNum === '0') lastNum = secondNum;
     secondNum = lastNum;
     let result = String(operate(+firstNum, +secondNum, operator));
     displayValue = result;
+    secondaryDisplay = `${firstNum} ${operator} ${secondNum} = `
     firstNum = result;
     currentValue = '';
     currentNumArr = [];
     populateDisplay();
-    console.log(`res = ${result}, ${firstNum}, ${secondNum}, op = ${operator}`)
+    populateSecondDisplay();
 };
 
 function deleteLastChar() {
-    
+    currentNumArr.pop();
+    if (currentNumArr.length == 0) currentNumArr = [0];
+    displayValue = currentNumArr.join('');
+    populateDisplay();
+    if (currentNumArr.length === 1 && currentNumArr[0] === 0) currentNumArr = [];
 }
 
 function clear() {
@@ -133,8 +138,6 @@ function clear() {
     displayValue = '0',
     secondaryDisplay = '',
     currentNumArr = [];
-
-
     populateDisplay()
     populateSecondDisplay()
 }
@@ -154,28 +157,17 @@ function updateVariables() {
         secondaryDisplay = `${currentValue} ${operator}`
         currentValue = '0';
         currentNumArr = [];
-        console.log(`cv = ${currentValue}, ${firstNum}, ${secondNum} pt1`)
     } else {
-    // else if (firstNum !== undefined && secondNum === undefined) {
-    //     secondNum = currentValue;
-    //     let result = String(operate(+firstNum, +secondNum, previousOp));
-    //     console.log(result)
-    //     secondaryDisplay = `${firstNum} ${previousOp} ${secondNum} ${operator} `
-    //     firstNum = displayValue = result;
-    //     currentValue = secondNum;
-    //     currentNumArr = [];
-    //     console.log(`cv = ${currentValue}, ${firstNum}, ${secondNum} pt2`)
-    // } else {
-        if (!currentValue) return
+        if (!currentValue) {
+            secondaryDisplay = `${firstNum} ${operator} `
+            return;
+        }
         secondNum = currentValue;
         let result = String(operate(+firstNum, +secondNum, previousOp));
-        console.log(result)
         secondaryDisplay = `${firstNum} ${previousOp} ${secondNum} ${operator} `
         firstNum = displayValue = result;
         currentValue = '';
         currentNumArr = [];
-        console.log(`result = ${result}`)
-        console.log(`cv = ${currentValue}, ${firstNum}, ${secondNum} pt3`)
     }
 }
 
